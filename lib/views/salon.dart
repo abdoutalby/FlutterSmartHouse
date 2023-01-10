@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:smarthouse/controllers/mqtt_controller.dart';
+import 'package:smarthouse/utils/Notification.dart';
 
 class Salon extends StatefulWidget {
   const Salon({super.key});
@@ -14,7 +15,7 @@ class _SalonState extends State<Salon> {
 
   Future<void> setupMqttClient() async {
     await mqttClientManager.connect();
-    mqttClientManager.subscribe("smarthouse/salon");
+    mqttClientManager.subscribe("smarthouse/notify");
   }
 
   void setupUpdatesListener() {
@@ -24,13 +25,8 @@ class _SalonState extends State<Salon> {
       final recMess = c![0].payload as MqttPublishMessage;
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-
-      setState(() {
-        lampe = pt.startsWith("t");
-      });
-
-      print('MQTTClient::Message received on topic: <${c[0].topic}> is $pt\n');
-    });
+      lampePressed();
+        });
   }
 
   MQTTClientManager mqttClientManager = MQTTClientManager();
@@ -43,8 +39,8 @@ class _SalonState extends State<Salon> {
   }
 
   lampePressed() {
-    mqttClientManager.publishMessage(
-        "smarthouse/salon", lampe ? "false" : "true");
+    lampe = true;
+    notifyAPI.showNotification(title: "House Seciruty Alert",body: " mouvement detected in your house you want to check" , payload: "lampe");
   }
 
   @override
@@ -60,7 +56,7 @@ class _SalonState extends State<Salon> {
           child: SizedBox(
         width: MediaQuery.of(context).size.width / 2,
         child: Column(children: [
-          const Text('Lampe'),
+            Text(lampe?'Mouvement Detected': ""),
           Container(
             width: 100,
             height: 100,
@@ -69,7 +65,7 @@ class _SalonState extends State<Salon> {
                 border: Border.all(
                     width: 1, color: lampe ? Colors.green : Colors.red)),
             child: TextButton(
-                onPressed: lampePressed,
+                onPressed: (){},
                 child: Text(
                   lampe ? 'OFF' : "ON",
                   style: TextStyle(color: lampe ? Colors.red : Colors.green),

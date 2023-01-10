@@ -11,9 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   sleek_circular_slider: ^2.0.1
-  get: 
-  webview_flutter: ^3.0.4
+  get:
+  video_player: ^2.4.10
   connectivity_plus: ^3.0.2
+  flutter_local_notifications: ^13.0.0
+  http: ^0.13.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
